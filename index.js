@@ -9,13 +9,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.send('Hello World! asijdpaosdkapoks')
+  res.sendFile(__dirname + '/views/index.html');
 })
 
-app.get('/random', function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');
-});
+// app.get('/random', function(req, res) {
+//     res.sendFile(__dirname + '/views/index.html');
+// });
 
+app.get('/login', (req, res) => {
+    console.log(req.body)
+    res.sendFile(__dirname + '/views/login.html');
+})
 app.post('/login', (req, res) => {
     console.log(req.body)
     res.send('Got a POST request')
