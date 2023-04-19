@@ -113,6 +113,30 @@ app.post('/login', (req, res) => {
 })
 
 
+// SIGN UP
+app.get('/signup', (req, res) => {
+    res.render('signup')
+})
+
+// Route for creating a new user
+app.post('/users', (req, res) => {
+    const { name, email, password } = req.body;
+    const user = { name, email, password };
+
+    // Insert new user into MySQL database
+    connection.query('INSERT INTO users SET ?', user, (err, results) => {
+        if (err) {
+            console.error('Error creating new user: ', err);
+            res.status(500).send('Error creating new user');
+            return;
+        }
+        console.log('New user created with id: ', results.insertId);
+        req.session.username = user.name;
+        req.session.authenticated = true;
+        res.redirect('/logged-in');
+    });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
