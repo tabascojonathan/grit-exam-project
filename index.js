@@ -53,16 +53,32 @@ app.get('/', (req, res) => {
     // res.sendFile(__dirname + '/views/html/index.html');
 })
 
-app.get('/api/getuser', (req, res) => {
-    res.json('{"name": "Gustav"}');
+app.get('/api/getfavoritecolor', (req, res) => {
+    if (req.session.authenticated && req.session.username) {
+
+        connection.query(`SELECT * FROM users WHERE name='${req.session.username}'`, function (error, results, fields) {
+            if (error) throw error;
+
+            if(results.length > 0){
+                res.json(`{"color": ${results[0].favorite_color}}`);
+            }else{
+                // res.send('Found no users')
+            }
+
+        });
+
+    }else {
+        res.redirect('/login');
+    }
 })
 
 
 app.get('/logged-in', (req, res) => {
-    if (req.session.authenticated) {
+    if (req.session.authenticated && req.session.username) {
         // If the user is authenticated
+        const username = req.session.username;
         const data = {
-            name: "Gustav",
+            name: username,
             style: "color: red;"
         }
         res.render('logged-in', data)
@@ -83,7 +99,9 @@ app.post('/login', (req, res) => {
         if (error) throw error;
 
         if(results.length > 0){
+            console.log(results[0].name)
             // res.send('Found ' + results.length + ' users')
+            req.session.username = results[0].name;
             req.session.authenticated = true;
             res.redirect('/logged-in');
         }else{
