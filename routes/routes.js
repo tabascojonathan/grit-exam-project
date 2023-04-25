@@ -25,7 +25,18 @@ router.get('/logged-in', (req, res) => {
     }
 })
 
+router.get('/logout', (req, res) => {
+    if (req.session.authenticated && req.session.username) {
+        req.session.authenticated = false;
+        req.session.username = null;
+        res.redirect('/');
+    } else {
+        res.redirect('/login');
+    }
+})
+
 router.get('/login', (req, res) => {
+
     res.render('login')
 })
 

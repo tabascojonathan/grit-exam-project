@@ -9,18 +9,20 @@ class Post {
         this.author = author;
     }
 
-    static async getAll() {
-        db.query('SELECT * FROM posts', function (error, results, fields) {
-            if (error) throw error;
-
-            if(results.length > 0){
-                console.log(results)
-                return results
-            }else{
-                return Error('None found')
-            }
-
-        });
+    static async  getAll() {
+        return new Promise((resolve, reject) => {
+            db.query('SELECT * FROM posts', function (error, results, fields) {
+                if (error) {
+                    reject(error)
+                }else{
+                    if(results.length > 0){
+                        resolve(results)
+                    }else{
+                        reject(new Error('None found'))
+                    }
+                }
+            });
+        })
     }
 
 }
