@@ -32,26 +32,14 @@ app.use(
 const router = require('./routes/routes');
 app.use(router);
 
+// Controllers
+const posts = require('./controllers/posts');
+app.use(posts);
 
-app.get('/api/getfavoritecolor', (req, res) => {
-    if (req.session.authenticated && req.session.username) {
+// API Endpoints
+const api = require('./api/endpoints');
+app.use(api);
 
-        connection.query(`SELECT * FROM users WHERE name='${req.session.username}'`, function (error, results, fields) {
-            if (error) throw error;
-
-            if(results.length > 0){
-                const data = {"color": results[0].favorite_color}
-                res.json(data);
-            }else{
-                // res.send('Found no users')
-            }
-
-        });
-
-    }else {
-        res.redirect('/login');
-    }
-})
 
 
 app.listen(port, () => {
