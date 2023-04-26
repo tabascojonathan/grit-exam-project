@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const port = 3000
 const session = require('express-session');
-const connection = require('./db_connection');
+
+const moment = require('moment');
+app.locals.moment = moment;
 
 require('dotenv').config();
 
