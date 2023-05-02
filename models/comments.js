@@ -8,23 +8,10 @@ class Comment {
         this.content = content;
     }
 
-    // VG TODO
-    static async  getAllForPostById() {
+    static async  testMethod() {
         return new Promise((resolve, reject) => {
             resolve('Lorem ipusm')
         })
-    }
-
-
-    // VG TODO
-    async create(){
-        const sql = ``;
-        const values = []
-
-        const result = await db.query(sql, values, function (error, results, fields) {
-            if (error) throw error;
-        });
-
     }
 
 }
