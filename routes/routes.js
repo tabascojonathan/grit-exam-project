@@ -1,37 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const connection = require('./../db_connection');
+const db = require('./../db_connection');
 const authMiddleware = require('./../middlewares/auth');
 
 
 router.get('/', (req, res) => {
     const data = {
         title: "Welcome",
-        style: "color: red;"
+        message: req.flash('message')
     }
+    console.log(data.message)
     res.render('index', data)
 })
 
-router.get('/testauth', authMiddleware, (req, res) => {
-    console.log(req.session.isAuthenticated)
-    if(req.isAuthenticated){
-
-        res.send('logged in')
-    }else{
-        res.send('not logged in')
-    }
-})
-
-
-router.get('/logged-in', authMiddleware, (req, res) => {
+router.get('/dashboard', authMiddleware, (req, res) => {
     if (req.isAuthenticated) {
         // If the user is authenticated
         const username = req.session.username;
         const data = {
             name: username,
-            style: "color: red;"
+            style: "color: red;",
+            message: req.flash('message')
         }
-        res.render('logged-in', data)
+        res.render('dashboard', data)
     } else {
         res.redirect('/login');
     }
@@ -41,6 +32,7 @@ router.get('/logout', (req, res) => {
     if (req.session.authenticated && req.session.username) {
         req.session.authenticated = false;
         req.session.username = null;
+        req.flash('message', 'You are now logged out.');
         res.redirect('/');
     } else {
         res.redirect('/login');
@@ -48,7 +40,6 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/login', (req, res) => {
-
     res.render('login')
 })
 
@@ -56,15 +47,16 @@ router.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    connection.query(`SELECT * FROM users WHERE email='${email}' AND password='${password}'`, function (error, results, fields) {
+    const sql = 'SELECT * FROM users WHERE email = ? AND password = ?';
+    const values = [email, password];
+    db.query(sql, values, function (error, results, fields) {
         if (error) throw error;
 
         if(results.length > 0){
-            console.log(results[0].name)
-            // res.send('Found ' + results.length + ' users')
             req.session.username = results[0].name;
             req.session.authenticated = true;
-            res.redirect('/logged-in');
+            req.flash('message', 'You are now logged in.');
+            res.redirect('/dashboard');
         }else{
             res.send('Found no users')
         }
@@ -84,7 +76,7 @@ router.post('/users', (req, res) => {
     const user = { name, email, password };
 
     // Insert new user into MySQL database
-    connection.query('INSERT INTO users SET ?', user, (err, results) => {
+    db.query('INSERT INTO users SET ?', user, (err, results) => {
         if (err) {
             console.error('Error creating new user: ', err);
             res.status(500).send('Error creating new user');
@@ -93,7 +85,7 @@ router.post('/users', (req, res) => {
         console.log('New user created with id: ', results.insertId);
         req.session.username = user.name;
         req.session.authenticated = true;
-        res.redirect('/logged-in');
+        res.redirect('/dashboard');
     });
 });
 

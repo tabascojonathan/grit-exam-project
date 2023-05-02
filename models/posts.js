@@ -2,16 +2,19 @@ const db = require('./../db_connection');
 
 class Post {
 
-    constructor({id, title, content}) {
+    constructor({id, title, slug, content}) {
         this.id = id;
         this.title = title;
+        this.slug = slug;
         this.content = content;
     }
 
     static async  getBySlug(slug) {
 
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM posts WHERE slug='${slug}'`, function (error, results, fields) {
+            const sql = 'SELECT * FROM posts WHERE slug = ?';
+            const values = [slug];
+            db.query(sql, values, function (error, results, fields) {
                 if (error) {
                     reject(error)
                 }else{
@@ -45,36 +48,16 @@ class Post {
     async create(){
         const sql = `
             INSERT INTO posts
-                (user_id, slug, title, content)
+                (user_id, title, slug, content)
             VALUES
                 (?, ?, ?, ?)
             `;
-            const values = [1, 'slug-slug-slug', this.title, this.content]
+        const values = [1, this.title, this.slug, this.content]
 
-            var self = this;
-            //const = await db.query(sql, values);
-            const result = await db.query(sql, values, function (error, results, fields) {
-                if (error) throw error;
-                console.log('this:')
-                console.log(self)
-                self.id = results.insertId;
-              });
-
+        const result = await db.query(sql, values, function (error, results, fields) {
+            if (error) throw error;
+        });
     }
-
-
-    // async save() {
-    //     const sql = `
-    //       INSERT INTO posts
-    //         (user_id, slug, title, content)
-    //       VALUES
-    //         (?, ?, ?, ?)
-    //     `;
-    //     const values = [2, "slug-slug", this.title, this.content];
-    //     const [result] = await db.query(sql, values);
-    //     this.id = result.insertId;
-    //     return this;
-    // }
 
 }
 
