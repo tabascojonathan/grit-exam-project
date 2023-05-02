@@ -3,7 +3,6 @@ const router = express.Router();
 const slugify = require('slugify');
 
 const Post = require('./../models/posts');
-const Comments = require('./../models/comments');
 
 // Get all posts
 router.get('/posts', async (req, res) => {
@@ -46,10 +45,9 @@ router.get('/posts/slug/:slug', async (req, res) => {
 
     try {
         const [post] = await Post.getBySlug(slug);
-        const comments = await Comments.getAllForPostById(post.id);
 
         // VG TODO
-        console.log(comments);
+        // Get Comments
 
         res.render('posts/show', {
             post: post
