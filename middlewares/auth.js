@@ -6,5 +6,4 @@ const auth = function isAuthenticated(req, res, next) {
     }
     next();
 }
-
 module.exports = auth;

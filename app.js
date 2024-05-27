@@ -17,6 +17,12 @@ app.use(
     })
 );
 app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.message = req.flash('message');
+  next();
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

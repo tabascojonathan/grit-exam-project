@@ -58,7 +58,8 @@ router.post('/login', (req, res) => {
             req.flash('message', 'You are now logged in.');
             res.redirect('/dashboard');
         }else{
-            res.send('Found no users')
+            req.flash('message', 'User not found');
+            res.redirect('/login');
         }
 
     });
