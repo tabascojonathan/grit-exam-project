@@ -2,13 +2,13 @@ var mysql  = require('mysql');
 require('dotenv').config();
 
 // Database connection
-var connection = mysql.createConnection({
-    host     : process.env.DB_HOST,
-    port     : process.env.DB_PORT,
-    user     : process.env.DB_USERNAME,
-    password : process.env.DB_PASSWORD,
-    database : process.env.DB_DATABASENAME
-  });
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'Jonathan_Ljungberg_express_exam'
+});
+
 
 connection.connect(function(err) {
     if (err) {

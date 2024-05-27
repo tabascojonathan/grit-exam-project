@@ -1,0 +1,18 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 8889,
+            "driver": "MySQL",
+            "name": "Jonathan_Ljungberg_express_exam",
+            "database": "Jonathan_Ljungberg_express_exam",
+            "username": "root",
+            "password": ""
+        }
+    ]
+}
