@@ -9,6 +9,8 @@ app.locals.moment = moment;
 
 require('dotenv').config();
 
+const db = require('./db_connection');
+
 app.use(
     session({
         secret: 'my-secret',

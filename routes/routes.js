@@ -120,4 +120,30 @@ router.get('/profile', authMiddleware, (req, res) => {
     }
 });
 
+router.get('/stats', (req, res) => {
+    const postsCountQuery = 'SELECT COUNT(*) AS posts_count FROM posts';
+    const usersCountQuery = 'SELECT COUNT(*) AS users_count FROM users';
+
+    db.query(postsCountQuery, (err, postsResult) => {
+        if (err) {
+            console.error('Error fetching posts count: ', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        db.query(usersCountQuery, (err, usersResult) => {
+            if (err) {
+                console.error('Error fetching users count: ', err);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+
+            const postsCount = postsResult[0].posts_count;
+            const usersCount = usersResult[0].users_count;
+
+            res.json({ posts_count: postsCount, users_count: usersCount });
+        });
+    });
+});
+
 module.exports = router;
