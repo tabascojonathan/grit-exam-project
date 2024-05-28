@@ -43,6 +43,14 @@ router.get('/login', (req, res) => {
     res.render('login')
 })
 
+router.get('/create', authMiddleware, (req, res) => {
+    if (req.isAuthenticated) {
+        res.render('create');
+    } else {
+        res.redirect('/login');
+    }
+});
+
 router.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -88,6 +96,28 @@ router.post('/users', (req, res) => {
         req.session.authenticated = true;
         res.redirect('/dashboard');
     });
+});
+
+router.get('/profile', authMiddleware, (req, res) => {
+    if (req.isAuthenticated) {
+        const username = req.session.username;
+        const sql = 'SELECT name, email FROM users WHERE name = ?';
+        db.query(sql, [username], (err, results) => {
+            if (err) {
+                console.error('Error fetching user data: ', err);
+                res.status(500).send('Error fetching user data');
+                return;
+            }
+            if (results.length > 0) {
+                const user = results[0];
+                res.render('profile', { name: user.name, email: user.email });
+            } else {
+                res.status(404).send('User not found');
+            }
+        });
+    } else {
+        res.redirect('/login');
+    }
 });
 
 module.exports = router;
