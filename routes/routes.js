@@ -26,7 +26,7 @@ router.get('/dashboard', authMiddleware, (req, res) => {
     } else {
         res.redirect('/login');
     }
-})
+});
 
 router.get('/logout', (req, res) => {
     if (req.session.authenticated && req.session.username) {

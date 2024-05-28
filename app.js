@@ -5,6 +5,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const moment = require('moment');
+const path = require('path');
 app.locals.moment = moment;
 
 require('dotenv').config();
